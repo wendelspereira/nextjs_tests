@@ -1,28 +1,15 @@
-import { Inter } from "next/font/google";
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-const inter = Inter({ subsets: ["latin"] });
-
-import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
-
-type Repo = {
-  name: string;
-  stargazers_count: number;
+export const getServerSideProps = async () => {
+  const res = await fetch(`${baseUrl}/api/hello`);
+  const repo = await res.json();
+  return { props: { repo } };
 };
 
-export const getServerSideProps = (async () => {
-  // Fetch data from external API
-  const res = await fetch("https://api.github.com/repos/vercel/next.js");
-  const repo: Repo = await res.json();
-  // Pass data to the page via props
-  return { props: { repo } };
-}) satisfies GetServerSideProps<{ repo: Repo }>;
-
-export default function Home({
-  repo,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Home({ repo }: any) {
   return (
     <main>
-      <p>{repo.stargazers_count}</p>
+      <p>{repo.name}</p>
     </main>
   );
 }
